@@ -1,0 +1,302 @@
+#+title: My manjaro linux setup
+
+* Current distro
+
+Manjaro Linux, Minimal i3 communtiy edition. Chosen because it comes with i3 out of the box and is based on Arch Linux.
+
+* Audio issues
+
+- No audio
+- [[https://soundcloud.com][Sondcloud]] would not play any track
+
+Requires a simple script to be run and the pc to be restarted
+
+#+begin_src shell
+  install_pulse
+#+end_src 
+  
+* Video (screen) issues
+
+- On boot the screen is square, and not fullscreen
+- After relogin its all nice
+- I also want a second screen
+
+** Connecting a separate screen
+   
+/Before tinkering with =xrandr= make sure you don't lock yourself out./
+
+- If you are writing a script test it first and then make it run automatically. If you are unsure, make a keybinding that will set something you know is correct.
+- If you mess up you can log in from the tty and fix your issues, or use a live bootable medium (install flash drive).
+
+Source: [[https://www.youtube.com/watch?v=wu2NWw2wPaA][How To Use Multiple Monitors On Linux (With Xrandr) by Brodie Robertson, YouTube]]
+
+First we need to set up xrandr so it sees our display and outputs to it.
+
+#+begin_src text
+  $ xrandr
+  Scre  en 0: minimum 8 x 8, current 2646 x 1024, maximum 32767 x 32767
+  eDP1 connected primary 1366x768+0+0 (normal left inverted right x axis y axis) 310mm x 170mm
+  1366x768      60.00*+  40.00
+  1280x720      59.86    60.00    59.74
+
+  ...
+
+  DP1 disconnected (normal left inverted right x axis y axis)
+  DP2 connected 1280x1024+1366+0 (normal left inverted right x axis y axis) 340mm x 270mm
+  1280x1024     60.02*+  75.02
+  1280x960      60.00
+
+  ...
+
+  HDMI1 disconnected (normal left inverted right x axis y axis)
+  HDMI2 disconnected (normal left inverted right x axis y axis)
+  VIRTUAL1 disconnected (normal left inverted right x axis y axis)
+#+end_src 
+  
+We are looking for these lines:
+  
+#+begin_src text
+  eDP1 connected primary ...
+  DP2 connected ...
+#+end_src
+  
+And from them we need just the name of the display (in my case eDP1 - main monitor, DP2 - secondary monitor).
+
+Next we tell xrandr to draw to the second monitor.
+
+#+begin_src shell
+  xrandr --output "DP2" --auto
+#+end_src 
+
+And we also need to tell xrandr that this monitor is separate from the main display.
+  
+#+begin_src shell
+  xrandr --output "eDP1" --auto --output "DP2" --right-of "eDP1"
+#+end_src 
+
+We can also combine it into a single command.
+
+#+begin_src shell
+  xrandr --output "DP2" --auto --right-of "eDP1" --output "eDP1" --auto
+#+end_src 
+
+** Disabling external screen
+
+#+begin_src shell
+  xrandr --output "DP2" --off --output "eDP1" --auto
+#+end_src   
+
+** Script to enable/disable screens with autodetection
+
+In my case I know that my screen eDP1 is the first in xrandr output and it is my main (primary) screen so I can just assume that if I grep for "connected" then the first thing in then list is going to be the primary screen.
+   
+Also I know that I will just have 2 screens and the second screen will be on the right of the main screen. Now lets write the script that gets those 2 screen names.
+
+#+begin_src shell
+  xrandr_displays=$(xrandr | awk '/ connected / { print $1; print_resolution=1 }')
+#+end_src   
+
+I used awk here because I dont need the entire line, just the first word. Now we get a list that looks something like this: "eDP1 DP2" if both monitors are connected. However it could have just one name in there.
+
+So if I use awk to get the first word in that line I can assign that to my main screen value and my second screen to the second value. If there is no second screen then its name will be "". Then using some if statements we can determine if the second screen is present and either make its mode =--auto= or =--off=.
+
+#+begin_src shell
+  xrandr_main_screen=$(echo $xrandr_displays | awk '{print $1}')
+  xrandr_aux_screen=$(echo  $xrandr_displays | awk '{print $2}')
+
+  if [ -z $xrandr_aux_screen ]
+  then
+      xrandr_aux_mode="--off"
+  else	     
+      xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+  fi	
+#+end_src
+
+The automatic detection is now done. We can reuse these values to force a specific layout.
+
+#+begin_src shell
+  xrandr_display_mode="auto"
+
+  case $xrandr_display_mode in
+      "auto")
+          if [ -z $xrandr_aux_screen ]
+          then
+              xrandr_aux_mode="--off"
+          else	     
+              xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+          fi		
+          ;;
+
+      "single")
+          xrandr_aux_mode="--off"
+          ;;
+
+      "dual")	 
+          xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+          ;;
+  esac
+#+end_src
+
+And If we want to select a display mode we can use dmenu. However we also need a way to use the auto detect feature on boot. We will be calling our script from the shell, so the easiest way to make that happen is by looking at the first argument and if its a known mode set the display mode to that.
+  
+#+begin_src shell
+  case $1 in
+      "auto" | "single" | "dual") xrandr_display_mode=$1 ;;
+  esac
+#+end_src
+
+At the end of it all run =xrandr=.
+
+#+begin_src shell
+  xrandr --output $xrandr_aux_screen $xrandr_aux_mode \
+         --output $xrandr_main_screen --auto --primary
+#+end_src
+
+And so we are done, here is the full script.
+
+#+begin_src shell
+  #!/bin/bash
+
+  # xrandr screen utility using dmenu or shell args
+
+  xrandr_displays=$(xrandr | awk '/ connected / { print $1; print_resolution=1 }')
+
+  xrandr_main_screen=$(echo $xrandr_displays | awk '{print $1}')
+  xrandr_aux_screen=$(echo  $xrandr_displays | awk '{print $2}')
+
+  xrandr_display_mode="auto"
+
+  if [ -z $1 ]
+  then
+      xrandr_display_mode=$(echo -e "auto\nsingle\ndual" | dmenu -p "display mode:")
+  else
+      case $1 in
+          "auto" | "single" | "dual") xrandr_display_mode=$1 ;;
+      esac
+  fi
+
+  xrandr_aux_mode="--off"
+
+  case $xrandr_display_mode in
+      "auto")
+          if [ -z $xrandr_aux_screen ]
+          then
+              xrandr_aux_mode="--off"
+          else	     
+              xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+          fi		
+          ;;
+
+      "single")
+          xrandr_aux_mode="--off"
+          ;;
+
+      "dual")	 
+          xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+          ;;
+  esac
+
+  xrandr --output $xrandr_aux_screen $xrandr_aux_mode \
+         --output $xrandr_main_screen --auto --primary
+
+  # xrandr --output DP2 --auto --right-of eDP1 --output eDP1 --auto --primary
+#+end_src
+
+To use it in dmenu make a symlink to =/bin=.
+
+#+begin_src shell
+  $ ln -s from.sh to/bin
+#+end_src
+
+** Setting up monitors automatically at boot
+
+Source: [[https://wiki.archlinux.org/title/LightDM#Greeter][Arch wiki: LightDM: Multiple-monitor setup]]
+
+Adding these lines to =/etc/X11/xorg.conf.d/52-resolution-fix.conf= will take care of setting up the monitors.
+
+#+begin_src conf
+Section "Monitor"
+    Identifier "eDP1"
+    Option "PreferredMode" "auto"
+    Option "Primary" "1"
+EndSection
+Section "Monitor"
+    Identifier "DP2"
+    Option "PreferredMode" "auto"
+    Option "RightOf" "eDP1"
+EndSection
+#+end_src
+  
+* Wallpaper
+
+The app used is =nitrogen=. It comes with a GUI interface.
+
+** TODO Using conky to display org-agenda
+
+Source: [[https://crafting.be/2014/02/emacs-conky-agenda/]]
+
+First we need to set up org agenda to search for TODO entries.
+
+#+begin_src
+	M-x customise-variable RET org-agenda-files
+#+end_src
+
+In the customise buffer add a new entry with a specific file or directory. If path is directory all files will be included.
+
+We need to 
+
+=/.config/conky/=
+
+* TODO SSh and git keys
+   
+* Fonts
+
+** Emoji support
+   
+For fonts in the package manager simply installing a font package and restarting apps will be enough.
+
+* Languages
+
+Add multi language support with this command.
+
+#+begin_src shell
+  setxkbmap us,ru -option 'grp:alt_shift_toggle'
+#+end_src
+
+* Time incorrect
+
+Source: [[https://unix.stackexchange.com/questions/603335/wrong-time-on-archlinux][Stack Exchange]]
+
+#+begin_src shell
+  sudo timedatectl set-local-rtc 1 --adjust-system-clock
+#+end_src
+
+Fixed the issue.
+  
+* Dotfiles
+
+#+begin_src shell
+  # Create a bare repository
+  git init --bare $HOME/dotfiles
+
+  # For faster typing in bash:
+  alias config='/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME'
+
+  # Restart bash
+  bash
+
+  # Do not list untracked files not to see literally every file in $HOME
+  config config --local status.showUntrackedFiles no
+#+end_src   
+  
+** Emacs
+
+- Built-in theme is nice
+- I need to get rid of the side bar and fringe
+- Some packages
+
+*** TODO [#A] Running emacs as a server
+
+#+begin_src bash
+  systemctl --user enable emacs
+#+end_src
