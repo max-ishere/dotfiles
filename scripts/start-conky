@@ -1,0 +1,8 @@
+#!/bin/bash
+
+CONKY_DIR=$HOME/.config/conky
+
+conky -c $CONKY_DIR/system-monitor &&
+    conky -c $CONKY_DIR/conky.conf
+
+exit 0

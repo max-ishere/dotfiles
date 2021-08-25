@@ -1,0 +1,361 @@
+#section: Variables
+
+set $mod Mod4
+set $browser firefox
+set $terminal alacritty
+set $editor emacs
+
+#section: App keybindings
+
+bindsym $mod+Shift+a exec $terminal -e $editor -nw
+bindsym $mod+a exec $editor
+bindsym $mod+Return exec $terminal
+bindsym $mod+b exec $browser
+bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
+
+bindsym Print exec --no-startup-id i3-scrot
+bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
+bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
+
+bindsym $mod+Shift+q kill
+floating_modifier $mod
+
+#section: Run prompts (program launchers)
+
+bindsym $mod+d exec --no-startup-id dmenu_recency
+bindsym $mod+z exec --no-startup-id morc_menu # categorised launcher
+
+#section: Screen brightness
+
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+
+#section: Workspaces settings
+
+set $ws1 1:Workbench
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5:Browser
+set $ws6 6:Just chatting
+set $ws7 7
+set $ws8 8
+
+workspace "$ws1" output primary
+workspace "$ws5" output DP2
+
+assign [class="$browser"] $ws5
+assign [class="TelegramDesktop"] $ws6
+assign [class="Viber"] $ws6
+assign [class="discord"] $ws6
+
+#section: i3 keybindings
+
+bindsym $mod+m bar mode toggle
+
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?      (FYI: You can also use i3-msg exit)' -b 'Yes, exit i3' 'i3-msg exit'"
+
+#section: Misc bindings
+
+bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
+
+workspace_auto_back_and_forth yes
+bindsym $mod+Shift+b workspace back_and_forth
+
+bindsym $mod+f fullscreen toggle
+
+bindsym $mod+Shift+space floating toggle
+
+bindsym $mod+space focus mode_toggle # focus on tiling/floating windows
+
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+bindsym $mod+Shift+s sticky toggle
+
+#section: Borders
+
+new_window pixel 1
+new_float normal
+
+hide_edge_borders none
+
+font xft:URWGothic-Book 11
+
+bindsym $mod+u border none
+bindsym $mod+y border pixel 1
+bindsym $mod+n border normal
+
+#section: Window focus
+
+bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+Left workspace prev
+
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+#section: Window splits
+
+bindsym $mod+h split h;exec notify-send 'tile horizontally'
+bindsym $mod+v split v;exec notify-send 'tile vertically'
+bindsym $mod+q split toggle
+
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+#section: Workspace keybindings
+
+bindsym $mod+Shift+greater move workspace to output right
+bindsym $mod+Shift+less move workspace to output left
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+
+bindsym $mod+Ctrl+1 move container to workspace $ws1
+bindsym $mod+Ctrl+2 move container to workspace $ws2
+bindsym $mod+Ctrl+3 move container to workspace $ws3
+bindsym $mod+Ctrl+4 move container to workspace $ws4
+bindsym $mod+Ctrl+5 move container to workspace $ws5
+bindsym $mod+Ctrl+6 move container to workspace $ws6
+bindsym $mod+Ctrl+7 move container to workspace $ws7
+bindsym $mod+Ctrl+8 move container to workspace $ws8
+
+bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
+
+#section: Open specific applications in floating mode
+
+for_window [urgent=latest] focus
+for_window [title="alsamixer"] floating enable border pixel 1
+for_window [title="window-info"] floating enable border pixel 1
+for_window [class="calamares"] floating enable border normal
+for_window [class="Clipgrab"] floating enable
+for_window [title="File Transfer*"] floating enable
+for_window [class="Galculator"] floating enable border pixel 1
+for_window [class="GParted"] floating enable border normal
+for_window [title="i3_help"] floating enable sticky enable border normal
+for_window [class="Lightdm-settings"] floating enable
+for_window [class="Lxappearance"] floating enable sticky enable border normal
+for_window [class="Manjaro-hello"] floating enable
+for_window [class="Manjaro Settings Manager"] floating enable border normal
+for_window [title="MuseScore: Play Panel"] floating enable
+for_window [class="Nitrogen"] floating enable sticky enable border normal
+for_window [class="Oblogout"] fullscreen enable
+for_window [class="octopi"] floating enable
+for_window [title="About Pale Moon"] floating enable
+for_window [class="Pamac-manager"] floating enable
+for_window [class="Pavucontrol"] floating enable
+for_window [class="qt5ct"] floating enable sticky enable border normal
+for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
+for_window [class="Simple-scan"] floating enable border normal
+for_window [class="(?i)System-config-printer.py"] floating enable border normal
+for_window [class="Skype"] floating enable border normal
+for_window [class="Timeset-gui"] floating enable border normal
+for_window [class="(?i)virtualbox"] floating enable border normal
+for_window [class="Xfburn"] floating enable
+
+#section: Lock, restart, shutdown, etc.
+
+bindsym $mod+9 exec --no-startup-id blurlock
+bindsym $mod+0 mode "$mode_system"
+
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+#section: Resizing window
+
+bindsym $mod+r mode "resize"
+mode "resize" {
+        bindsym j resize shrink width 5 px or 5 ppt
+        bindsym k resize grow height 5 px or 5 ppt
+        bindsym l resize shrink height 5 px or 5 ppt
+        bindsym semicolon resize grow width 5 px or 5 ppt
+
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+#section: i3 gaps
+
+gaps inner 14
+gaps outer -2
+
+smart_gaps on
+smart_borders on
+
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+#section: Autostart applications
+
+exec --no-startup-id dual-monitor single
+exec --no-startup-id dual-monitor auto
+exec --no-startup-id compton -b
+exec --no-startip-id volumeicon
+exec --no-startup-id setxkbmap us,ru -option 'grp:alt_shift_toggle'
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nitrogen --restore; sleep 1; compton -b
+exec --no-startup-id nm-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id pamac-tray
+exec --no-startup-id clipit
+exec --no-startup-id conky
+exec --no-startup-id xautolock -time 10 -locker blurlock
+exec_always --no-startup-id ff-theme-util
+exec_always --no-startup-id fix_xcursor
+
+set_from_resource $term_background background
+set_from_resource $term_foreground foreground
+set_from_resource $term_color0     color0
+set_from_resource $term_color1     color1
+set_from_resource $term_color2     color2
+set_from_resource $term_color3     color3
+set_from_resource $term_color4     color4
+set_from_resource $term_color5     color5
+set_from_resource $term_color6     color6
+set_from_resource $term_color7     color7
+set_from_resource $term_color8     color8
+set_from_resource $term_color9     color9
+set_from_resource $term_color10    color10
+set_from_resource $term_color11    color11
+set_from_resource $term_color12    color12
+set_from_resource $term_color13    color13
+set_from_resource $term_color14    color14
+set_from_resource $term_color15    color15
+
+#section: i3 status bar
+
+bar {
+    i3bar_command i3bar
+    status_command i3status
+    position bottom
+
+    tray_output primary
+    tray_padding 0
+
+    bindsym button4 nop
+    bindsym button5 nop
+
+    strip_workspace_numbers yes
+
+    modifier $mod
+
+    colors {
+        background #222D31
+        statusline #F9FAF9
+        separator  #454947
+
+	#                  border  backgr. text
+        focused_workspace  #F9FAF9 #16a085 #292F34
+        active_workspace   #595B5B #353836 #FDF6E3
+        inactive_workspace #595B5B #222D31 #EEE8D5
+        binding_mode       #16a085 #2C2C2C #F9FAF9
+        urgent_workspace   #16a085 #FDF6E3 #E5201D
+    }
+}
+
+# Theme colors
+# class                   border  backgr. text    indic.   child_border
+  client.focused          #556064 #556064 #80FFF9 #FDF6E3
+  client.focused_inactive #2F3D44 #2F3D44 #1ABC9C #454948
+  client.unfocused        #2F3D44 #2F3D44 #1ABC9C #454948
+  client.urgent           #CB4B16 #FDF6E3 #1ABC9C #268BD2
+  client.placeholder      #000000 #0c0c0c #ffffff #000000 
+
+  client.background       #2B2C2B
+
+################################################################################################
+## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
+################################################################################################
+
+exec --no-startup-id volumeicon
+bindsym $mod+Ctrl+m exec $terminal -t 'alsamixer' -e 'alsamixer'
+#exec --no-startup-id pulseaudio
+#exec --no-startup-id pa-applet
+#bindsym $mod+Ctrl+m exec pavucontrol
+
+################################################################################################

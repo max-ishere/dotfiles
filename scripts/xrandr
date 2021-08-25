@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# xrandr screen utility using dmenu or shell args
+
+xrandr_displays=$(xrandr | awk '/ connected / { print $1; print_resolution=1 }')
+
+xrandr_main_screen=$(echo $xrandr_displays | awk '{print $1}')
+xrandr_aux_screen=$(echo  $xrandr_displays | awk '{print $2}')
+
+xrandr_display_mode="auto"
+
+if [ -z $1 ]
+then
+    xrandr_dmenu_entry=$(echo -e "auto\nsingle\ndual" | dmenu -p "display mode:")
+    case $xrandr_dmenu_entry in
+	"auto" | "single" | "dual") xrandr_display_mode=$xrandr_dmenu_entry ;;
+    esac
+    
+else
+    case $1 in
+	"auto" | "single" | "dual") xrandr_display_mode=$1 ;;
+    esac
+fi
+
+xrandr_aux_mode="--off"
+
+case $xrandr_display_mode in
+     "auto")
+	 if [ -z $xrandr_aux_screen ]
+	 then
+	     xrandr_aux_mode="--off"
+	 else	     
+	     xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+	 fi		
+	 ;;
+
+     "single")
+	 xrandr_aux_mode="--off"
+	 ;;
+
+     "dual")	 
+	 xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+	 ;;
+esac
+
+xrandr --output $xrandr_aux_screen $xrandr_aux_mode \
+       --output $xrandr_main_screen --auto --primary
+
+# xrandr --output DP2 --auto --right-of eDP1 --output eDP1 --auto --primary

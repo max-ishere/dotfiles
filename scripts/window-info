@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# gets window properties
+
+xprop | awk '/_NET_WM_PID/ {print "Window pid: ", $3} \
+      	    /WM_CLASS/ {print "class: ", $4} \
+	    /WM_NAME\(STRING\)/ { print "name: ", $3}'
+
+
