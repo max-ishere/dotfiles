@@ -4,11 +4,13 @@ set $mod Mod4
 set $browser firefox
 set $terminal alacritty
 set $editor emacs
+set $sup-editor code # vs-code
 
 #section: App keybindings
 
 bindsym $mod+Shift+a exec $terminal -e $editor -nw
 bindsym $mod+a exec $editor
+bindsym $mod+c exec $sup-editor
 bindsym $mod+Return exec $terminal
 bindsym $mod+b exec $browser
 bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
@@ -33,7 +35,7 @@ bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness 
 #section: Workspaces settings
 
 set $ws1 1:Workbench
-set $ws2 2
+set $ws2 2:Crafting table
 set $ws3 3
 set $ws4 4
 set $ws5 5:Browser
@@ -159,6 +161,7 @@ bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 #section: Open specific applications in floating mode
 
 for_window [urgent=latest] focus
+for_window [title="makeme float"] floating enable border pixel 1
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [title="window-info"] floating enable border pixel 1
 for_window [class="calamares"] floating enable border normal
@@ -272,21 +275,21 @@ mode "$mode_gaps_outer" {
 
 #section: Autostart applications
 
-exec --no-startup-id dual-monitor single
-exec --no-startup-id dual-monitor auto
 exec --no-startup-id compton -b
 exec --no-startip-id volumeicon
 exec --no-startup-id setxkbmap us,ru -option 'grp:alt_shift_toggle'
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
-exec --no-startup-id conky
+exec --no-startup-id conky-make-org-agenda; sleep 5; start-conky
+exec_always --no-startup-id conky-make-org-agenda
 exec --no-startup-id xautolock -time 10 -locker blurlock
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
+exec --no-startup-id sleep 1; dual-monitor single; sleep 1; dual-monitor auto
+exec --no-startup-id sleep 1; nitrogen --restore; sleep 1; compton -b
 
 set_from_resource $term_background background
 set_from_resource $term_foreground foreground

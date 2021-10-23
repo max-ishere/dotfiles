@@ -1,4 +1,5 @@
 #+title: My manjaro linux setup
+#+todo: TODO QUED | DONE
 
 * Current distro
 
@@ -226,26 +227,52 @@ Section "Monitor"
     Option "RightOf" "eDP1"
 EndSection
 #+end_src
-  
+
+* Night blue light filter with =redshift=
+
+To enable night light you can use the =redshift= command:
+
+#+begin_src text
+  $ redshift -P -O 2700
+#+end_src 
+
+=-P= allows you to play with the temperature and discard old value. Otherwise the old temparature will persist and you won't see what the real thing looks like.
+
+** TODO Add automatic adjustment and maybe some interface
+
 * Wallpaper
 
 The app used is =nitrogen=. It comes with a GUI interface.
 
-** TODO Using conky to display org-agenda
+* Emacs
+
+** Running emacs as a server
+
+#+begin_src bash
+  systemctl --user enable emacs
+#+end_src
+
+* TODO Using conky to display org-agenda
 
 Source: [[https://crafting.be/2014/02/emacs-conky-agenda/]]
+Source: [[https://emacs.stackexchange.com/questions/16551/how-do-i-view-all-org-mode-todos-that-are-not-recurring-or-not-scheduled][Custom agenda views, unscheduled only]]
+Source: [[https://emacs.stackexchange.com/questions/31060/org-agenda-sorting-strategy-items-containing-no-time-of-day-specification-first][Something similar to ^^^]]
+Source: [[https://www.reddit.com/r/orgmode/comments/3z8ki5/multiple_orgagendaskipfunctions/][How to make a list of excludes for agenda]]
 
 First we need to set up org agenda to search for TODO entries.
 
-#+begin_src
-	M-x customise-variable RET org-agenda-files
+#+begin_src 
+M-x customise-variable RET org-agenda-files
 #+end_src
 
 In the customise buffer add a new entry with a specific file or directory. If path is directory all files will be included.
 
-We need to 
+** QUED Make nice agenda output
 
-=/.config/conky/=
+- overdue tasks
+- list of all the entries for the month
+- list of tasks for the week, today's tasks are in a better formatting
+- Update time
 
 * TODO SSh and git keys
    
@@ -287,16 +314,4 @@ Fixed the issue.
 
   # Do not list untracked files not to see literally every file in $HOME
   config config --local status.showUntrackedFiles no
-#+end_src   
-  
-** Emacs
-
-- Built-in theme is nice
-- I need to get rid of the side bar and fringe
-- Some packages
-
-*** TODO [#A] Running emacs as a server
-
-#+begin_src bash
-  systemctl --user enable emacs
 #+end_src
