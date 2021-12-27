@@ -40,17 +40,20 @@ set $ws3 3
 set $ws4 4
 set $ws5 5:Browser
 set $ws6 6:Just chatting
-set $ws7 7
-set $ws8 8
+set $ws7 7:Stream Control
+set $ws8 8:Music
 
 workspace "$ws1" output primary
 workspace "$ws5" output DP2
+workspace "$ws7" output DP2
+workspace "$ws8" output DP2
+
 
 assign [class="$browser"] $ws5
 assign [class="TelegramDesktop"] $ws6
 assign [class="Viber"] $ws6
 assign [class="discord"] $ws6
-
+assign [title="Sand Game"] $ws3
 #section: i3 keybindings
 
 bindsym $mod+m bar mode toggle
@@ -160,7 +163,7 @@ bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 
 #section: Open specific applications in floating mode
 
-for_window [urgent=latest] focus
+#for_window [urgent=latest] focus
 for_window [title="makeme float"] floating enable border pixel 1
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [title="window-info"] floating enable border pixel 1
@@ -192,7 +195,7 @@ for_window [class="Xfburn"] floating enable
 
 #section: Lock, restart, shutdown, etc.
 
-bindsym $mod+9 exec --no-startup-id blurlock
+bindsym $mod+9 exec --no-startup-id i3exit suspend
 bindsym $mod+0 mode "$mode_system"
 
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
