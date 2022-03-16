@@ -240,6 +240,20 @@ To enable night light you can use the =redshift= command:
 
 ** TODO Add automatic adjustment and maybe some interface
 
+* Adjust built-in backlight.
+
+1. Install either =xbacklight= or =acpilight=. Both are interchangable.
+2. If you get =Permission denied=: chown and chmod backlight file with some group (I used a custom group name), then reboot.
+   #+begin_src shell
+# root shell
+groupadd backlight
+usermod -aG backlight $USER
+chown :backlight /path/to/backlight
+chmod g+rw /path/to/backlight
+# reboot now
+    #+end_src
+
+
 * Wallpaper
 
 The app used is =nitrogen=. It comes with a GUI interface.

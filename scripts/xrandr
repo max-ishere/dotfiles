@@ -30,7 +30,7 @@ case $xrandr_display_mode in
 	 then
 	     xrandr_aux_mode="--off"
 	 else	     
-	     xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+	     xrandr_aux_mode="--auto --left-of $xrandr_main_screen"
 	 fi		
 	 ;;
 
@@ -39,7 +39,7 @@ case $xrandr_display_mode in
 	 ;;
 
      "dual")	 
-	 xrandr_aux_mode="--auto --right-of $xrandr_main_screen"
+	 xrandr_aux_mode="--auto --left-of $xrandr_main_screen"
 	 ;;
 esac
 

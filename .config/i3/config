@@ -4,13 +4,11 @@ set $mod Mod4
 set $browser firefox
 set $terminal alacritty
 set $editor emacs
-set $sup-editor code # vs-code
 
 #section: App keybindings
 
 bindsym $mod+Shift+a exec $terminal -e $editor -nw
 bindsym $mod+a exec $editor
-bindsym $mod+c exec $sup-editor
 bindsym $mod+Return exec $terminal
 bindsym $mod+b exec $browser
 bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
@@ -29,8 +27,11 @@ bindsym $mod+z exec --no-startup-id morc_menu # categorised launcher
 
 #section: Screen brightness
 
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10"
+
+bindsym Shift+XF86MonBrightnessUp exec "xbacklight -inc 1"
+bindsym Shift+XF86MonBrightnessDown exec "xbacklight -dec 1"
 
 #section: Workspaces settings
 
@@ -43,11 +44,15 @@ set $ws6 6:Just chatting
 set $ws7 7:Stream Control
 set $ws8 8:Music
 
-workspace "$ws1" output primary
-workspace "$ws5" output DP2
-workspace "$ws7" output DP2
-workspace "$ws8" output DP2
+set $secondary_output DP2
 
+workspace "$ws1" output primary
+workspace "$ws5" output $secondary_output
+workspace "$ws7" output $secondary_output
+workspace "$ws8" output $secondary_output
+
+workspace_auto_back_and_forth yes
+bindsym $mod+Shift+b workspace back_and_forth
 
 assign [class="$browser"] $ws5
 assign [class="TelegramDesktop"] $ws6
@@ -67,14 +72,9 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3?      (FYI: You can 
 
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
-workspace_auto_back_and_forth yes
-bindsym $mod+Shift+b workspace back_and_forth
-
 bindsym $mod+f fullscreen toggle
 
-bindsym $mod+Shift+space floating toggle
-
-bindsym $mod+space focus mode_toggle # focus on tiling/floating windows
+bindsym $mod+space floating toggle
 
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
@@ -286,7 +286,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
 exec --no-startup-id clipit
-exec --no-startup-id conky-make-org-agenda; sleep 5; start-conky
+exec_always killall conky && conky
 exec_always --no-startup-id conky-make-org-agenda
 exec --no-startup-id xautolock -time 10 -locker blurlock
 exec_always --no-startup-id ff-theme-util
@@ -316,7 +316,7 @@ set_from_resource $term_color15    color15
 #section: i3 status bar
 
 bar {
-    i3bar_command i3bar
+    i3bar_command i3bar --transparency
     status_command i3status
     position bottom
 
@@ -331,14 +331,14 @@ bar {
     modifier $mod
 
     colors {
-        background #222D31
-        statusline #F9FAF9
-        separator  #454947
+        background #00000000
+        statusline #b9d9e2
+        separator  #545f67
 
-	#                  border  backgr. text
-        focused_workspace  #F9FAF9 #16a085 #292F34
+	#                      border  backgr. text
+        focused_workspace  #b9d9e2 #00777f #b9d9e2
         active_workspace   #595B5B #353836 #FDF6E3
-        inactive_workspace #595B5B #222D31 #EEE8D5
+        inactive_workspace #595B5B #00000000 #EEE8D5
         binding_mode       #16a085 #2C2C2C #F9FAF9
         urgent_workspace   #16a085 #FDF6E3 #E5201D
     }

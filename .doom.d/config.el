@@ -55,3 +55,5 @@
 
 (set-formatter! 'dartfmt "dart format " :modes '(dart-mode))
 (setq! lsp-dart-sdk-dir "/opt/dart-sdk")
+(put 'projectile-compilation-command 'safe-local-variable #'stringp)
+(put 'projectile-test-command 'safe-local-variable #'stringp)
