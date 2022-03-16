@@ -1,0 +1,86 @@
+padding:
+  x: 2
+  y: 2
+
+decorations: none
+gtk_theme_variant: dark
+
+title: Alacritty
+dynamic_title: true
+
+class: Alacritty
+instance: Alacritty
+general: Alacritty
+
+history: 1000000000
+multiplier: 3
+
+font:
+  normal:
+    family: monospace
+    style: Regular
+  bold:
+    family: monospace
+    style: Bold
+  italic:
+    family: monospace
+    style: Bold
+  bold_italic:
+    family: monospace
+    style: Bold Italic
+  size: 11.0
+
+ofset:
+  x: 0
+  y: 0
+
+bell:
+  animation: EaseOutExpo
+  duration: 100
+  color: '#1d1f21'
+
+window:
+  opacity: 0.9
+
+save_to_clipboard: true
+cursor:
+  blinking: On
+  blink_interval: 750
+  thickness: 0
+  mouse:
+    hide_when_typing: true
+
+colors:
+  primary:
+    background: '#131c24'
+    foreground: '#989a99'
+
+  normal:
+    black:   '#131c24'
+    red:     '#ae2d26'
+    green:   '#327c5c'
+    yellow:  '#c2b500'
+    blue:    '#194570'
+    magenta: '#800372'
+    cyan:    '#00777f'
+    white:   '#a0a8ae'
+
+  bright:
+    black:   '#545f67'
+    red:     '#d54e53'
+    green:   '#4ed58e'
+    yellow:  '#d2e61c'
+    blue:    '#7aa6da'
+    magenta: '#c397d8'
+    cyan:    '#70c0b1'
+    white:   '#b9d9e2'
+
+  dim:
+    black:   '#101010'
+    red:     '#943015'
+    green:   '#046723'
+    yellow:  '#9ca92c'
+    blue:    '#244b70'
+    magenta: '#800372'
+    cyan:    '#007571'
+    white:   '#8d959a'
