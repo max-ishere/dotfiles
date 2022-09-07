@@ -9,7 +9,7 @@
    ["#3c4c55" "#DF8C8C" "#A8CE93" "#DADA93" "#83AFE5" "#D18EC2" "#7FC1CA" "#c5d4dd"])
  '(auth-source-save-behavior nil)
  '(custom-safe-themes
-   '("1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" default))
+   '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "1d5e33500bc9548f800f9e248b57d1b2a9ecde79cb40c0b1398dec51ee820daf" "1704976a1797342a1b4ea7a75bdbb3be1569f4619134341bd5a4c1cfb16abad4" default))
  '(exwm-floating-border-color "#4f5d65")
  '(fci-rule-color "#556873")
  '(highlight-tail-colors ((("#46595b") . 0) (("#425760") . 20)))

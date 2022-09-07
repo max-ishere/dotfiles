@@ -53,7 +53,13 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+; Dart lang
 (set-formatter! 'dartfmt "dart format " :modes '(dart-mode))
 (setq! lsp-dart-sdk-dir "/opt/dart-sdk")
+
+; Rust lang
+;; Better analyzer
+(setq rustic-lsp-server 'rust-analyzer)
+
 (put 'projectile-compilation-command 'safe-local-variable #'stringp)
 (put 'projectile-test-command 'safe-local-variable #'stringp)

@@ -7,6 +7,8 @@ set $editor emacs
 
 #section: App keybindings
 
+bindsym $mod+Shift+Ctrl+z exec xrandr --output eDP-1 --auto
+
 bindsym $mod+Shift+a exec $terminal -e $editor -nw
 bindsym $mod+a exec $editor
 bindsym $mod+Return exec $terminal
@@ -291,7 +293,6 @@ exec_always --no-startup-id conky-make-org-agenda
 exec --no-startup-id xautolock -time 10 -locker blurlock
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
-exec --no-startup-id sleep 1; dual-monitor single; sleep 1; dual-monitor auto
 exec --no-startup-id sleep 1; nitrogen --restore; sleep 1; compton -b
 
 set_from_resource $term_background background
